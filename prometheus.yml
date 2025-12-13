@@ -1,0 +1,10 @@
+global:
+  # Default interval for scraping targets
+  scrape_interval: 15s # هر ۱۵ ثانیه داده‌ها را جمع‌آوری کند
+
+scrape_configs:
+  # Static target configuration
+  - job_name: "prometheus"
+    static_configs:
+      # Prometheus scrapes its own metrics
+      - targets: ["localhost:9090"]

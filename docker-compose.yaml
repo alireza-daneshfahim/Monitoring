@@ -1,0 +1,52 @@
+services:
+  prometheus:
+    # Prometheus official image (mirrored via ArvanCloud)
+    image: docker.arvancloud.ir/prom/prometheus:latest
+    container_name: prometheus
+    # Restart container unless explicitly stopped
+    restart: unless-stopped
+    volumes:
+      # Prometheus main configuration file
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      # Persistent storage for metrics data
+      - prometheus_data:/prometheus
+    # Internal monitoring network
+    networks:
+      - monitoring
+
+  grafana:
+    # Grafana official image (mirrored via ArvanCloud)
+    image: docker.arvancloud.ir/grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      # Persistent storage for Grafana dashboards and settings
+      - grafana_data:/var/lib/grafana
+    networks:
+      - monitoring
+
+  nginx:
+    # Nginx reverse proxy
+    image: docker.arvancloud.ir/nginx
+    container_name: nginx
+    restart: unless-stopped
+    volumes:
+      # Prometheus virtual host configuration
+      - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
+      # Grafana virtual host configuration
+      - ./grafana.conf:/etc/nginx/conf.d/grafana.conf:ro
+    ports:
+      # Expose Nginx on host port 80
+      - "80:80"
+    networks:
+      - monitoring
+        
+volumes:
+  # Named volume for Prometheus data persistence
+  prometheus_data:
+  # Named volume for Grafana data persistence
+  grafana_data:
+
+networks:
+  monitoring:
+    driver: bridge
