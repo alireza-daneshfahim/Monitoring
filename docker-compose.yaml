@@ -27,14 +27,19 @@ services:
 
   nginx:
     # Nginx reverse proxy
-    image: docker.arvancloud.ir/nginx
     container_name: nginx
     restart: unless-stopped
+    # Build custom Nginx image with htpasswd support
+    build:
+      context: .
+      dockerfile: Dockerfile.yml  
     volumes:
       # Prometheus virtual host configuration
       - ./nginx.conf:/etc/nginx/conf.d/nginx.conf:ro
       # Grafana virtual host configuration
       - ./grafana.conf:/etc/nginx/conf.d/grafana.conf:ro
+      # Mount htpasswd file (READ ONLY)
+      - ./auth/.htpasswd:/etc/nginx/auth/.htpasswd:ro
     ports:
       # Expose Nginx on host port 80
       - "80:80"
@@ -49,4 +54,5 @@ volumes:
 
 networks:
   monitoring:
+    # Bridge network for internal communication
     driver: bridge
