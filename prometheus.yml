@@ -8,3 +8,7 @@ scrape_configs:
     static_configs:
       # Prometheus scrapes its own metrics
       - targets: ["localhost:9090"]
+  - job_name: "Cadvisor"
+    static_configs:
+      # Cadvisor scrapes its own metrics
+      - targets: [192.168.14.200:8080]
