@@ -8,7 +8,9 @@ scrape_configs:
     static_configs:
       # Prometheus scrapes its own metrics
       - targets: ["localhost:9090"]
+
+  # Docker host and container metrics via cAdvisor
   - job_name: "Cadvisor"
     static_configs:
-      # Cadvisor scrapes its own metrics
+      # Replace with the IP and port where cAdvisor is exposed
       - targets: [192.168.14.200:8080]
